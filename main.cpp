@@ -3,11 +3,15 @@
 #include <curses.h>
 #include <exception>
 
-int main(){
+int main(){ 
     initscr();
     noecho();
     cbreak();
     
+    start_color();
+    init_pair(1, COLOR_MAGENTA, COLOR_BLACK);
+    init_pair(2, COLOR_BLUE, COLOR_BLACK);
+
     int y, x, winy, winx;
     getmaxyx(stdscr, y, x);
     
@@ -18,7 +22,9 @@ int main(){
 
     std::chrono::steady_clock::time_point st = std::chrono::steady_clock::now();
 
-    curs_set(0);
+    curs_set(FALSE);
+    nodelay(stdscr, TRUE);
+    srand(time(0));
 
     while(true){
         std::chrono::steady_clock::time_point en = std::chrono::steady_clock::now();
@@ -28,15 +34,19 @@ int main(){
         }
 
 
-        sn.collision(1, winy - 1, 1, winx - 1);
+        sn.collision(0, winy - 1, 0, winx - 1);
         sn.control();
         sn.spawn(1, winy - 2, 1, winx - 2);
         sn.move();
-
+        
+        wattron(win, COLOR_PAIR(2));   
         box(win, 0, 0);
+        wattroff(win, COLOR_PAIR(2)); 
+
+        wattron(win, COLOR_PAIR(1));   
         sn.draw(win);
-    
-        refresh();
+        wattroff(win, COLOR_PAIR(1)); 
+        
         wrefresh(win);
     }
 

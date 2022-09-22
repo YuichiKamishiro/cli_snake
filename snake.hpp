@@ -61,8 +61,6 @@ void snake::move() {
 }
 
 void snake::control() {
-    timeout(0);
-    
     char c = getch();
     
     switch(c) {
@@ -104,4 +102,10 @@ void snake::spawn(int miny, int maxy, int minx, int maxx) {
 void snake::collision(int miny, int maxy, int minx, int maxx) {
     if(snake_arr[0].current_pos.x >= maxx || snake_arr[0].current_pos.x <= minx) exit(3);
     if(snake_arr[0].current_pos.y >= maxy || snake_arr[0].current_pos.y <= miny) exit(3);
+    for(int i = 1; i < snake_arr.size(); ++i) {
+        if(snake_arr[0].current_pos.y == snake_arr[i].current_pos.y 
+        && snake_arr[0].current_pos.x == snake_arr[i].current_pos.x) { 
+            exit(3);
+        }
+    }
 }
