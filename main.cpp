@@ -33,8 +33,9 @@ int main(int argc, char *argv[]){
 
     while(sn.terminate == false){
         std::chrono::steady_clock::time_point en = std::chrono::steady_clock::now();
-        if(std::chrono::duration_cast<std::chrono::milliseconds>(en - st).count() >= 50){
+        if(std::chrono::duration_cast<std::chrono::milliseconds>(en - st).count() >= speed / 4){
             wclear(win);
+            clear();
             st = std::chrono::steady_clock::now();
         }
 
@@ -53,7 +54,8 @@ int main(int argc, char *argv[]){
         wattron(win, COLOR_PAIR(1));   
         sn.draw(win);
         wattroff(win, COLOR_PAIR(1)); 
-       
+
+        refresh(); 
         wrefresh(win);
     }
 
