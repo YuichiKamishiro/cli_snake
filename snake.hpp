@@ -23,7 +23,7 @@ public:
     std::chrono::steady_clock::time_point spawn_timer;
     
     std::vector<node> snake_arr;
-    bool eaten = true;
+    bool eaten = true; bool terminate = false;
     point apple_pos;
     int dir = '0';
 
@@ -64,10 +64,10 @@ void snake::control() {
     char c = getch();
     
     switch(c) {
-        case 'w': dir = 'w'; break;
-        case 'a': dir = 'a'; break;
-        case 's': dir = 's'; break;
-        case 'd': dir = 'd'; break;
+        case 'w': if(dir != 's') dir = 'w'; break;
+        case 'a': if(dir != 'd') dir = 'a'; break;
+        case 's': if(dir != 'w') dir = 's'; break;
+        case 'd': if(dir != 'a') dir = 'd'; break;
     }
 }
 
@@ -100,12 +100,12 @@ void snake::spawn(int miny, int maxy, int minx, int maxx) {
 }
 
 void snake::collision(int miny, int maxy, int minx, int maxx) {
-    if(snake_arr[0].current_pos.x >= maxx || snake_arr[0].current_pos.x <= minx) exit(3);
-    if(snake_arr[0].current_pos.y >= maxy || snake_arr[0].current_pos.y <= miny) exit(3);
+    if(snake_arr[0].current_pos.x >= maxx || snake_arr[0].current_pos.x <= minx) terminate = true;
+    if(snake_arr[0].current_pos.y >= maxy || snake_arr[0].current_pos.y <= miny) terminate = true;
     for(int i = 1; i < snake_arr.size(); ++i) {
         if(snake_arr[0].current_pos.y == snake_arr[i].current_pos.y 
-        && snake_arr[0].current_pos.x == snake_arr[i].current_pos.x) { 
-            exit(3);
+        && snake_arr[0].current_pos.x == snake_arr[i].current_pos.x) {
+            terminate = true;
         }
     }
 }

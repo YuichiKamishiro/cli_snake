@@ -9,8 +9,8 @@ int main(){
     cbreak();
     
     start_color();
-    init_pair(1, COLOR_MAGENTA, COLOR_BLACK);
-    init_pair(2, COLOR_BLUE, COLOR_BLACK);
+    init_pair(1, COLOR_WHITE, COLOR_BLACK);
+    init_pair(2, COLOR_CYAN, COLOR_BLACK);
 
     int y, x, winy, winx;
     getmaxyx(stdscr, y, x);
@@ -26,10 +26,11 @@ int main(){
     nodelay(stdscr, TRUE);
     srand(time(0));
 
-    while(true){
+    while(sn.terminate == false){
         std::chrono::steady_clock::time_point en = std::chrono::steady_clock::now();
         if(std::chrono::duration_cast<std::chrono::milliseconds>(en - st).count() >= 100){
             wclear(win);
+            clear();
             st = std::chrono::steady_clock::now();
         }
 
@@ -38,7 +39,9 @@ int main(){
         sn.control();
         sn.spawn(1, winy - 2, 1, winx - 2);
         sn.move();
-        
+
+        mvwprintw(stdscr, y / 4 - 2, x / 4, "score : %d", sn.snake_arr.size() - 1);       
+
         wattron(win, COLOR_PAIR(2));   
         box(win, 0, 0);
         wattroff(win, COLOR_PAIR(2)); 
@@ -46,7 +49,8 @@ int main(){
         wattron(win, COLOR_PAIR(1));   
         sn.draw(win);
         wattroff(win, COLOR_PAIR(1)); 
-        
+       
+        refresh();
         wrefresh(win);
     }
 
