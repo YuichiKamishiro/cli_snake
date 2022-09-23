@@ -29,17 +29,17 @@ public:
 
     snake(std::pair<int, int>);
 
-    void move();
+    void move(int);
     void spawn(int, int, int, int);
     void control();
     void collision(int, int, int, int); 
     void draw(WINDOW *);
 };
 
-void snake::move() {
+void snake::move(int speed) {
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
-    if(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() >= 200){
+    if(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() >= speed){
         start = std::chrono::steady_clock::now();
 
         snake_arr[0].past_pos.x = snake_arr[0].current_pos.x;
@@ -72,7 +72,8 @@ void snake::control() {
 }
 
 void snake::draw(WINDOW *win){ 
-    for(int i = 0; i < snake_arr.size(); ++i) { mvwaddch(win, snake_arr[i].current_pos.y, snake_arr[i].current_pos.x, '+'); }
+    for(int i = 1; i < snake_arr.size(); ++i) { mvwaddch(win, snake_arr[i].current_pos.y, snake_arr[i].current_pos.x, '+'); }
+    mvwaddch(win, snake_arr[0].current_pos.y, snake_arr[0].current_pos.x, '@');
     mvwaddch(win, apple_pos.y, apple_pos.x, '*');
 }
 

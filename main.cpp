@@ -1,9 +1,14 @@
 #include "snake.hpp"
-#include <chrono>
 #include <curses.h>
-#include <exception>
+#include <chrono>
+#include <iostream>
 
-int main(){ 
+int main(int argc, char *argv[]){
+    int speed = 200;
+    
+    std::cout << "Enter your speed, 200 is default:";
+    std::cin >> speed;
+
     initscr();
     noecho();
     cbreak();
@@ -28,9 +33,8 @@ int main(){
 
     while(sn.terminate == false){
         std::chrono::steady_clock::time_point en = std::chrono::steady_clock::now();
-        if(std::chrono::duration_cast<std::chrono::milliseconds>(en - st).count() >= 100){
+        if(std::chrono::duration_cast<std::chrono::milliseconds>(en - st).count() >= 50){
             wclear(win);
-            clear();
             st = std::chrono::steady_clock::now();
         }
 
@@ -38,7 +42,7 @@ int main(){
         sn.collision(0, winy - 1, 0, winx - 1);
         sn.control();
         sn.spawn(1, winy - 2, 1, winx - 2);
-        sn.move();
+        sn.move(speed);
 
         mvwprintw(stdscr, y / 4 - 2, x / 4, "score : %d", sn.snake_arr.size() - 1);       
 
@@ -50,7 +54,6 @@ int main(){
         sn.draw(win);
         wattroff(win, COLOR_PAIR(1)); 
        
-        refresh();
         wrefresh(win);
     }
 
