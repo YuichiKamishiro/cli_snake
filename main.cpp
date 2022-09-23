@@ -6,7 +6,7 @@
 int main(int argc, char *argv[]){
     int speed = 200;
     
-    std::cout << "Enter your speed, 200 is default:";
+    std::cout << "Enter your speed[px/milli], default - 200 : ";
     std::cin >> speed;
 
     initscr();
@@ -20,44 +20,28 @@ int main(int argc, char *argv[]){
     int y, x, winy, winx;
     getmaxyx(stdscr, y, x);
     
-    snake sn({5, 5});
+    snake sn({1, 1});
     
-    WINDOW *win = newwin(y / 2 + 5, x / 2, y / 4, x / 4);
+    WINDOW *win = newwin(y / 2, y, 1, 1);
     getmaxyx(win, winy, winx);
-
-    std::chrono::steady_clock::time_point st = std::chrono::steady_clock::now();
 
     curs_set(FALSE);
     nodelay(stdscr, TRUE);
     srand(time(0));
-
+    
     while(sn.terminate == false){
-        std::chrono::steady_clock::time_point en = std::chrono::steady_clock::now();
-        if(std::chrono::duration_cast<std::chrono::milliseconds>(en - st).count() >= speed / 4){
-            wclear(win);
-            clear();
-            st = std::chrono::steady_clock::now();
-        }
-
+        werase(win);
 
         sn.collision(0, winy - 1, 0, winx - 1);
         sn.control();
         sn.spawn(1, winy - 2, 1, winx - 2);
-        sn.move(speed);
+        sn.move(win, speed);
 
-        mvwprintw(stdscr, y / 4 - 2, x / 4, "score : %d", sn.snake_arr.size() - 1);       
-
-        wattron(win, COLOR_PAIR(2));   
+        mvwprintw(stdscr, 0, 2, "score : %d", sn.snake_arr.size() - 1);       
+        wrefresh(stdscr);
+        
         box(win, 0, 0);
-        wattroff(win, COLOR_PAIR(2)); 
-
-        wattron(win, COLOR_PAIR(1));   
-        sn.draw(win);
-        wattroff(win, COLOR_PAIR(1)); 
-
-        refresh(); 
         wrefresh(win);
     }
-
     endwin();
 }

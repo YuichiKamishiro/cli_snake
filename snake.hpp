@@ -19,8 +19,7 @@ public:
 
 class snake {
 public:
-    std::chrono::steady_clock::time_point start;
-    std::chrono::steady_clock::time_point spawn_timer;
+    std::chrono::steady_clock::time_point move_clock;
     
     std::vector<node> snake_arr;
     bool eaten = true; bool terminate = false;
@@ -29,18 +28,17 @@ public:
 
     snake(std::pair<int, int>);
 
-    void move(int);
+    void move(WINDOW *, int);
     void spawn(int, int, int, int);
     void control();
     void collision(int, int, int, int); 
     void draw(WINDOW *);
 };
 
-void snake::move(int speed) {
-    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+void snake::move(WINDOW *win, int speed) {
 
-    if(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() >= speed){
-        start = std::chrono::steady_clock::now();
+    if(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - move_clock).count() >= speed){
+        move_clock = std::chrono::steady_clock::now();
 
         snake_arr[0].past_pos.x = snake_arr[0].current_pos.x;
         snake_arr[0].past_pos.y = snake_arr[0].current_pos.y;
@@ -57,7 +55,9 @@ void snake::move(int speed) {
             snake_arr[i].current_pos.x = snake_arr[i - 1].past_pos.x;
             snake_arr[i].current_pos.y = snake_arr[i - 1].past_pos.y;
         }
+        wrefresh(win);
     }
+    draw(win);
 }
 
 void snake::control() {
@@ -79,8 +79,7 @@ void snake::draw(WINDOW *win){
 
 snake::snake(std::pair<int, int> p) {
     snake_arr.push_back(node({p.first, p.second}));
-    start = std::chrono::steady_clock::now();
-    spawn_timer = std::chrono::steady_clock::now();
+    move_clock = std::chrono::steady_clock::now();
 }
 
 
