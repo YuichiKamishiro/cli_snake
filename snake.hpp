@@ -67,7 +67,6 @@ void snake::move(WINDOW *win, int speed) {
         }
         wrefresh(win);
     }
-    draw(win);
 }
 
 void snake::control() {

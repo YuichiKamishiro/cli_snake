@@ -14,7 +14,7 @@ int main(int argc, char *argv[]){
     cbreak();
     
     start_color();
-    init_pair(1, COLOR_WHITE, COLOR_BLACK);
+    init_pair(1, COLOR_GREEN, COLOR_BLACK);
     init_pair(2, COLOR_CYAN, COLOR_BLACK);
 
     int y, x, winy, winx;
@@ -38,11 +38,18 @@ int main(int argc, char *argv[]){
         sn.move(win, speed);
         sn.menu(win);
 
+        wattron(win, COLOR_PAIR(1));
+        sn.draw(win);
+        wattroff(win, COLOR_PAIR(1));
+        
+        wattron(win, COLOR_PAIR(2));
+        box(win, 0, 0);
+        wattroff(win, COLOR_PAIR(2));
+
+        wrefresh(win);
+
         mvwprintw(stdscr, 0, 2, "score : %d", sn.snake_arr.size() - 1);       
         wrefresh(stdscr);
-        
-        box(win, 0, 0);
-        wrefresh(win);
     }
     endwin();
 }
