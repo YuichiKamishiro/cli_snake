@@ -36,6 +36,7 @@ int main(int argc, char *argv[]){
         sn.control();
         sn.spawn(1, winy - 2, 1, winx - 2);
         sn.move(win, speed);
+        sn.menu(win);
 
         mvwprintw(stdscr, 0, 2, "score : %d", sn.snake_arr.size() - 1);       
         wrefresh(stdscr);

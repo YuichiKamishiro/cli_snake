@@ -22,12 +22,22 @@ public:
     std::chrono::steady_clock::time_point move_clock;
     
     std::vector<node> snake_arr;
-    bool eaten = true; bool terminate = false;
+    
+    char* choices[3]{"restart - q", "quit - a", "select - z"};
+    
+    int choice = 0;
+    
+    bool eaten = true; bool terminate = false; bool in_menu = false;
+    
     point apple_pos;
+    
     int dir = '0';
 
     snake(std::pair<int, int>);
 
+    void start_menu();
+    void menu(WINDOW *);
+    void restart();
     void move(WINDOW *, int);
     void spawn(int, int, int, int);
     void control();
@@ -99,13 +109,55 @@ void snake::spawn(int miny, int maxy, int minx, int maxx) {
     }
 }
 
+void snake::restart() {
+    snake_arr.clear();
+    snake_arr.push_back(node(point(5, 5)));
+    eaten = true;
+    dir = '0';
+    choice = 0;
+    move_clock = std::chrono::steady_clock::now();
+}
+
+void snake::start_menu() {
+    in_menu = true;
+}
+
+void snake::menu(WINDOW *window_to_clear) {
+    if(in_menu){
+        werase(window_to_clear);
+        WINDOW *menu = newwin(5, 20, 0, 0);
+        box(menu, 0, 0);
+        nodelay(menu, TRUE);
+
+        while(in_menu){
+            for(int i = 0; i < 3; ++i) {
+                if(choice == i) {
+                    wattron(menu, A_REVERSE);
+                    mvwprintw(menu, i + 1, 1, choices[i]);
+                    wattroff(menu, A_REVERSE);
+                    wrefresh(menu);
+                } else {
+                    mvwprintw(menu, i + 1, 1, choices[i]);
+                    wrefresh(menu);     
+                }
+            }
+            char c = wgetch(menu);
+            switch(c){
+                case 'q': --choice; if(choice < 0) choice = 0; break;
+                case 'a': ++choice; if(choice > 1) choice = 1; break;
+                case 'z': if(choice == 1) {in_menu = false; terminate = true;} else {in_menu = false; wclear(menu); wrefresh(menu); delwin(menu); restart();} break;
+            }
+        }
+    }
+}
+
 void snake::collision(int miny, int maxy, int minx, int maxx) {
-    if(snake_arr[0].current_pos.x >= maxx || snake_arr[0].current_pos.x <= minx) terminate = true;
-    if(snake_arr[0].current_pos.y >= maxy || snake_arr[0].current_pos.y <= miny) terminate = true;
+    if(snake_arr[0].current_pos.x >= maxx || snake_arr[0].current_pos.x <= minx) start_menu();
+    if(snake_arr[0].current_pos.y >= maxy || snake_arr[0].current_pos.y <= miny) start_menu();
     for(int i = 1; i < snake_arr.size(); ++i) {
         if(snake_arr[0].current_pos.y == snake_arr[i].current_pos.y 
         && snake_arr[0].current_pos.x == snake_arr[i].current_pos.x) {
-            terminate = true;
+            start_menu();
         }
     }
 }
