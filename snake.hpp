@@ -23,7 +23,7 @@ public:
     
     std::vector<node> snake_arr;
     
-    char* choices[3]{"restart - q", "quit - a", "select - z"};
+    std::string choices[3]{"restart - q", "quit - a", "select - z"};
     
     int choice = 0;
     
@@ -132,11 +132,11 @@ void snake::menu(WINDOW *window_to_clear) {
             for(int i = 0; i < 3; ++i) {
                 if(choice == i) {
                     wattron(menu, A_REVERSE);
-                    mvwprintw(menu, i + 1, 1, choices[i]);
+                    mvwprintw(menu, i + 1, 1, choices[i].c_str());
                     wattroff(menu, A_REVERSE);
                     wrefresh(menu);
                 } else {
-                    mvwprintw(menu, i + 1, 1, choices[i]);
+                    mvwprintw(menu, i + 1, 1, choices[i].c_str());
                     wrefresh(menu);     
                 }
             }
